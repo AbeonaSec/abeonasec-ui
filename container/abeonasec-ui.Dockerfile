@@ -14,7 +14,7 @@ FROM docker.io/library/nginx:alpine
 COPY --from=builder /app/dist/spa /usr/share/nginx/html/abeonasec-spa
 
 # copy default configuration file
-COPY nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
 
 # expose port 80 and start nginx
 EXPOSE 80
