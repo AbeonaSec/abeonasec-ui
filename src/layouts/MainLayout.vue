@@ -39,14 +39,23 @@
         <q-item-label
           header
         >
-          Essential Links
+          Navigation
         </q-item-label>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <template v-for="(item, index) in linksList" :key="index">
+          <q-item clickable v-ripple :to="item.link">
+            <q-item-section avatar>
+              <q-icon :name="item.icon" />
+            </q-item-section>
+            <q-item-section>
+              {{ item.title }}
+              <q-item-label caption>
+                {{ item.caption }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-separator/>
+        </template>
       </q-list>
     </q-drawer>
 
@@ -58,38 +67,52 @@
 
 <script setup>
 import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
   {
     title: 'Health',
     caption: 'System status and resource utilization',
     icon: 'favorite',
-    link: '/'
+    // link: import('pages/HealthPage.vue'),
+    link: '/health', // :to expects a route path, not a file path
+    separator: true
   },
   {
     title: 'Threat Management',
     caption: 'Active threats and mitigation actions',
     icon: 'code',
-    link: '/threats'
+    // we should be able to just use the pathway as the link to the new page
+    link: '/threats',
+    separator: true
   },
   {
     title: 'Logs',
     caption: 'Security events and audit trails',
     icon: 'chat',
-    link: '/logs'
+    link: '/logs',
+    separator: true
+
+  },
+  {
+    title: 'Plugins',
+    caption: 'View and install plugins',
+    icon: 'lock',
+    link: '/plugins',
+    separator: true
   },
   {
     title: 'Network',
     caption: 'Traffic monitoring and connection status',
     icon: 'record_voice_over',
-    link: '/network'
+    link: '/network',
+    separator: true
   },
   {
     title: 'Help',
     caption: 'Documentation and support resources',
     icon: 'rss_feed',
-    link: '/help'
+    link: '/help',
+    separator: true
   }
 ]
 
