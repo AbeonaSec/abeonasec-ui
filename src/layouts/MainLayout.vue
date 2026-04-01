@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated   :class="$q.dark.isActive ? 'bg-grey-10 text-white' : 'bg-grey text-white'"
+  <q-layout view="hHh Lpr lFf">
+    <q-header elevated   :class="$q.dark.isActive ? 'bg-black-10 text-white' : 'bg-black text-white'"
 >
       <q-toolbar>
         <q-btn
@@ -13,7 +13,12 @@
         />
 
         <q-toolbar-title>
-          Abeona Security
+          <q-btn
+            flat
+            dense
+            label="Abeona Security"
+            to="/"
+          />
         </q-toolbar-title>
         
         <!-- Dark/Light mode toggle -->
