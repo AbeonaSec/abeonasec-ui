@@ -44,6 +44,8 @@
           v-model:pagination="pagination"
           @request="onTableRequest"
           binary-state-sort
+          @row-click="onRowClick"
+          style="cursor: pointer"
         >
           <template v-slot:body-cell-protocol="props">
             <q-td :props="props">
@@ -71,6 +73,98 @@
         </q-table>
       </q-card>
     </div>
+
+    <!-- Detail dialog -->
+    <q-dialog v-model="showDetail" maximized>
+      <q-card style="max-width: 700px; width: 100%; margin: auto; height: fit-content; border-radius: 14px; align-self: center;">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Packet Detail</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section v-if="detailLoading" class="text-center q-pa-lg">
+          <q-spinner size="32px" />
+        </q-card-section>
+
+        <q-card-section v-else-if="detailError" class="text-negative">
+          Failed to load: {{ detailError }}
+        </q-card-section>
+
+        <q-card-section v-else-if="detail">
+          <!-- Summary fields -->
+          <div class="q-gutter-sm q-mb-md">
+            <div class="row q-gutter-sm">
+              <div class="col">
+                <div class="text-caption text-grey">Time</div>
+                <div>{{ fmtTime(detail.timestamp) }}</div>
+              </div>
+              <div class="col">
+                <div class="text-caption text-grey">Protocol</div>
+                <q-badge :color="protocolColor(detail.protocol)" :label="detail.protocol" />
+              </div>
+              <div class="col">
+                <div class="text-caption text-grey">Flags</div>
+                <div class="text-caption">{{ fmtFlags(detail.flags, detail.protocol_num) }}</div>
+              </div>
+            </div>
+            <div class="row q-gutter-sm q-mt-sm">
+              <div class="col">
+                <div class="text-caption text-grey">Source</div>
+                <div class="text-mono">{{ detail.src_ip }}:{{ detail.src_port }}</div>
+                <div class="text-caption text-grey">{{ detail.src_mac }}</div>
+              </div>
+              <div class="col">
+                <div class="text-caption text-grey">Destination</div>
+                <div class="text-mono">{{ detail.dest_ip }}:{{ detail.dest_port }}</div>
+                <div class="text-caption text-grey">{{ detail.dest_mac }}</div>
+              </div>
+              <div class="col">
+                <div class="text-caption text-grey">Host IP</div>
+                <div class="text-mono">{{ detail.host_ip }}</div>
+              </div>
+            </div>
+          </div>
+
+          <q-separator class="q-mb-md" />
+
+          <!-- Data / headers -->
+          <div class="text-subtitle2 q-mb-sm">Data</div>
+
+          <!-- Parsed DNS -->
+          <div v-if="detail.parsed_dns">
+            <q-list dense bordered separator class="rounded-borders">
+              <q-item>
+                <q-item-section>
+                  <span class="text-caption text-grey">Type</span>
+                  <span class="text-body2">{{ detail.parsed_dns.type }} (txid {{ detail.parsed_dns.transaction_id }})</span>
+                </q-item-section>
+              </q-item>
+              <q-item v-for="(q, i) in detail.parsed_dns.questions" :key="i">
+                <q-item-section>
+                  <span class="text-caption text-grey">Query {{ i + 1 }}</span>
+                  <span class="text-mono text-body2">{{ q.name }}</span>
+                  <span class="text-caption text-grey">{{ q.type }} {{ q.class }}</span>
+                </q-item-section>
+              </q-item>
+              <q-item v-if="detail.parsed_dns.answer_count > 0">
+                <q-item-section>
+                  <span class="text-caption text-grey">Answers</span>
+                  <span class="text-body2">{{ detail.parsed_dns.answer_count }} record(s) in response</span>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+
+          <!-- Raw fallback -->
+          <div v-else-if="detail.data">
+            <pre class="text-mono text-caption bg-grey-1 q-pa-sm rounded-borders" style="white-space: pre-wrap; word-break: break-all">{{ detail.data }}</pre>
+          </div>
+
+          <div v-else class="text-grey text-caption">No data</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -83,6 +177,27 @@ const loading = ref(false)
 const error = ref('')
 const searchQuery = ref('')
 const protocolFilter = ref('All')
+
+const showDetail = ref(false)
+const detail = ref(null)
+const detailLoading = ref(false)
+const detailError = ref('')
+
+async function onRowClick (_, row) {
+  showDetail.value = true
+  detail.value = null
+  detailError.value = ''
+  detailLoading.value = true
+  try {
+    const res = await fetch(`/api/logs/${row._id}`)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    detail.value = await res.json()
+  } catch (e) {
+    detailError.value = e.message
+  } finally {
+    detailLoading.value = false
+  }
+}
 
 const pagination = ref({
   page: 1,
@@ -173,4 +288,5 @@ onMounted(fetchLogs)
 <style scoped>
 .page-container { max-width: 1400px; margin: 0 auto; }
 .page-card { border-radius: 14px; }
+.text-mono { font-family: monospace; }
 </style>
