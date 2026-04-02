@@ -1,6 +1,8 @@
 # stage 1: build quasar project
 # use node base image and set working directory
 FROM node:24-slim AS builder
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # copy Quasar project into container and build
