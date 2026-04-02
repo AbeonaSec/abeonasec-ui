@@ -6,13 +6,15 @@
       <!-- Quick links -->
       <div class="row q-col-gutter-md q-mb-lg">
         <div class="col-6 col-md-3" v-for="link in quickLinks" :key="link.label">
-          <q-card class="page-card cursor-pointer" clickable v-ripple>
-            <q-card-section class="text-center q-pa-lg">
-              <q-icon :name="link.icon" size="36px" color="primary" class="q-mb-sm" />
-              <div class="text-subtitle2 text-weight-medium">{{ link.label }}</div>
-              <div class="text-caption text-grey">{{ link.description }}</div>
-            </q-card-section>
-          </q-card>
+          <a :href="link.url" target="_blank" rel="noopener noreferrer" >
+            <q-card class="page-card cursor-pointer" clickable v-ripple>
+              <q-card-section class="text-center q-pa-lg">
+                <q-icon :name="link.icon" size="36px" color="primary" class="q-mb-sm" />
+                <div class="text-subtitle2 text-weight-medium">{{ link.label }}</div>
+                <div class="text-caption text-grey">{{ link.description }}</div>
+              </q-card-section>
+            </q-card>
+          </a>
         </div>
       </div>
 
@@ -48,7 +50,8 @@
           <q-card class="page-card">
             <q-card-section>
               <div class="text-subtitle1 text-weight-medium q-mb-sm">More Help?</div>
-              <q-btn outline color="primary" label="Open Issue on GitHub" icon="open_in_new" class="full-width q-mb-sm" />
+              <q-btn outline color="primary" label="Open Issue on GitHub" icon="open_in_new" class="full-width q-mb-sm" 
+              href="https://github.com/AbeonaSec/abeonasec-core/issues" target="_blank" rel="noopener noreferrer"/>
             </q-card-section>
           </q-card>
         </div>
@@ -59,9 +62,9 @@
 
 <script setup>
 const quickLinks = [
-  { label: 'Getting Started', description: 'Installation and first-run guide', icon: 'rocket_launch' },
-  { label: 'Configuration', description: 'System and plugin settings', icon: 'tune' },
-  { label: 'Changelog', description: 'Release notes and updates', icon: 'history' }
+  { label: 'Getting Started', description: 'Installation Guide', icon: 'rocket_launch', url:'https://github.com/AbeonaSec/abeonasec-core/blob/main/docs/Installation_Guide.md' },
+  { label: 'Configuration', description: 'System and plugin settings', icon: 'tune', url:'' },
+  { label: 'Changelog', description: 'Release notes and updates', icon: 'history', url:'https://github.com/AbeonaSec/abeonasec-core/tree/main/docs/updates' }
 ]
 
 const systemInfo = [
