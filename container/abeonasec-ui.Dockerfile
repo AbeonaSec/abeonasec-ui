@@ -5,6 +5,10 @@ WORKDIR /app
 
 # copy Quasar project into container and build
 COPY ../. .
+
+# find localhost url for api specified in quasar config and change to container dns name
+RUN find quasar.config.js -type f -exec sed -i 's/localhost/abeonasec-api/g' {} +
+
 RUN npm install
 RUN npm run build
 
