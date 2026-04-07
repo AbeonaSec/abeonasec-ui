@@ -228,14 +228,19 @@ const TCP_FLAGS = [
 ]
 
 function fmtFlags (flags, protocolNum) {
-  if (protocolNum !== 6 || !flags) return '—'
-  const active = TCP_FLAGS.filter(f => flags & f.bit).map(f => f.label)
+  if (Number(protocolNum) !== 6 || flags == null) return '—'
+  const flagsNum = typeof flags === 'string' ? parseInt(flags, 10) : flags
+  if (isNaN(flagsNum)) return '—'
+  const active = TCP_FLAGS.filter(f => flagsNum & f.bit).map(f => f.label)
   return active.length ? active.join(' ') : '—'
 }
 
 function fmtTime (ts) {
   if (!ts) return '—'
-  return new Date(ts * 1000).toLocaleString()
+  const num = Number(ts)
+  if (!isNaN(num)) return new Date(num / 1000).toLocaleString()
+  const d = new Date(ts)
+  return isNaN(d.getTime()) ? String(ts) : d.toLocaleString()
 }
 
 function protocolColor (proto) {
