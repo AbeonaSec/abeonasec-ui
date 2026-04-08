@@ -24,5 +24,5 @@ COPY ./container/nginx-default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist/spa /usr/share/nginx/html
 
 # expose port 80 and start nginx
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
