@@ -1,151 +1,162 @@
 <template>
   <q-page class="q-pa-lg">
-  <div class="dashboard-container">
-    <div class="text-h5 text-weight-medium q-mb-md">Overview</div>
+    <div class="dashboard-container">
+      <div class="text-h5 text-weight-medium q-mb-md">Overview</div>
 
-    <!-- ONE GRID ROW -->
-    <div class="row q-col-gutter-lg">
+      <!-- ONE GRID ROW -->
+      <div class="row q-col-gutter-lg">
 
-      <!-- Health Overview -->
-      <div class="col-12 col-md-6" clickable @click="$router.push('/health')">
-        <div class="text-h6">System Health</div>
-        <q-icon name="monitor_heart" size="24px" color="positive" />
-
-        <q-card class="dashboard-card">
-          <div v-for="metric in gaugeMetrics" :key="metric.label">
-            <q-card-section class="text-center">
-              <q-circular-progress
-                :value="metric.percent"
-                size="70px"
-                :thickness="0.15"
-                :color="gaugeColor(metric.percent)"
-                track-color="grey-3"
-                class="q-mb-sm"
-              >
-                <span class="text-subtitle2">
-                  {{ loading ? '—' : metric.percent + '%' }}
-                </span>
-              </q-circular-progress>
-              <div class="text-subtitle2 q-mt-xs">{{ metric.label }}</div>
-              <div class="text-caption text-grey">{{ metric.detail }}</div>
-            </q-card-section>
+        <!-- Health Overview -->
+        <div class="col-12 col-md-6" clickable @click="$router.push('/health')">
+          <div class="row items-center justify-between q-mb-sm">
+            <div class="text-h6">System Health</div>
+            <q-icon name="monitor_heart" size="24px" color="positive" />
           </div>
-        </q-card>
-      </div>
 
-      <!-- Threat Management -->
-      <div class="col-12 col-md-6" clickable @click="$router.push('/threats')">
-        <div class="text-h6">Threat Management</div>
-        <q-icon name="shield" size="24px" color="warning" />
-
-        <q-table
-          :rows="threats"
-          :columns="columnsTM"
-          row-key="idx"
-          :loading="loadingTM"
-          flat
-          :rows-per-page-options="[25, 50, 100]"
-          v-model:pagination="paginationTM"
-          @request="onTableRequestTM"
-          binary-state-sort
-          @row-click="onRowClickTM"
-          style="cursor: pointer"
-        >
-          <template v-slot:body-cell-severity="props">
-            <q-td :props="props">
-              <q-badge v-if="props.row.probs" color="negative" label="Critical" />
-              <q-badge v-else color="grey-6" label="Normal" />
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-protocol="props">
-            <q-td :props="props">
-              <q-badge :color="protocolColorTM(props.value)" :label="props.value" />
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-timestamp="props">
-            <q-td :props="props">{{ fmtTimeTM(props.value) }}</q-td>
-          </template>
-
-          <template v-slot:body-cell-source="props">
-            <q-td :props="props">
-              <span class="text-mono">{{ props.row.src_ip }}</span>
-              <span class="text-caption text-grey q-ml-xs">:{{ props.row.src_port }}</span>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-dest="props">
-            <q-td :props="props">
-              <span class="text-mono">{{ props.row.dest_ip }}</span>
-              <span class="text-caption text-grey q-ml-xs">:{{ props.row.dest_port }}</span>
-            </q-td>
-          </template>
-
-          <template v-slot:no-data>
-            <div class="full-width text-center text-grey q-pa-md">
-              {{ errorTM || 'No records found' }}
+          <q-card class="dashboard-card">
+            <div v-for="metric in gaugeMetrics" :key="metric.label">
+              <q-card-section class="text-center">
+                <q-circular-progress
+                  :value="metric.percent"
+                  size="70px"
+                  :thickness="0.15"
+                  :color="gaugeColor(metric.percent)"
+                  track-color="grey-3"
+                  class="q-mb-sm"
+                >
+                  <span class="text-subtitle2">
+                    {{ loading ? '—' : metric.percent + '%' }}
+                  </span>
+                </q-circular-progress>
+                <div class="text-subtitle2 q-mt-xs">{{ metric.label }}</div>
+                <div class="text-caption text-grey">{{ metric.detail }}</div>
+              </q-card-section>
             </div>
-          </template>
-        </q-table>
+          </q-card>
+        </div>
+
+        <!-- Threat Management -->
+        <div class="col-12 col-md-6" clickable @click="$router.push('/threats')">
+          <div class="row items-center justify-between q-mb-sm">
+            <div class="text-h6">Threat Management</div>
+            <q-icon name="shield" size="24px" color="warning" />
+          </div>
+
+          <q-table
+            :rows="threats"
+            :columns="columnsTM"
+            row-key="idx"
+            :loading="loadingTM"
+            flat
+            :rows-per-page-options="[25, 50, 100]"
+            v-model:pagination="paginationTM"
+            @request="onTableRequestTM"
+            binary-state-sort
+            @row-click="onRowClickTM"
+            style="cursor: pointer"
+          >
+            <template v-slot:body-cell-severity="props">
+              <q-td :props="props">
+                <q-badge v-if="props.row.probs" color="negative" label="Critical" />
+                <q-badge v-else color="grey-6" label="Normal" />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-protocol="props">
+              <q-td :props="props">
+                <q-badge :color="protocolColorTM(props.value)" :label="props.value" />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-timestamp="props">
+              <q-td :props="props">{{ fmtTimeTM(props.value) }}</q-td>
+            </template>
+
+            <template v-slot:body-cell-source="props">
+              <q-td :props="props">
+                <span class="text-mono">{{ props.row.src_ip }}</span>
+                <span class="text-caption text-grey q-ml-xs">:{{ props.row.src_port }}</span>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-dest="props">
+              <q-td :props="props">
+                <span class="text-mono">{{ props.row.dest_ip }}</span>
+                <span class="text-caption text-grey q-ml-xs">:{{ props.row.dest_port }}</span>
+              </q-td>
+            </template>
+
+            <template v-slot:no-data>
+              <div class="full-width text-center text-grey q-pa-md">
+                {{ errorTM || 'No records found' }}
+              </div>
+            </template>
+          </q-table>
+        </div>
+
+        <!-- Logs -->
+        <div class="col-12 col-md-6" clickable @click="$router.push('/logs')">
+          <div class="row items-center justify-between q-mb-sm">
+            <div class="text-h6">Logs</div>
+            <q-icon name="receipt_long" size="24px" color="info" />
+          </div>
+
+          <q-table
+            :rows="logs"
+            :columns="columns"
+            row-key="idx"
+            :loading="loading"
+            flat
+            :rows-per-page-options="[25, 50, 100]"
+            v-model:pagination="pagination"
+            @request="onTableRequest"
+            binary-state-sort
+            @row-click="onRowClick"
+            style="cursor: pointer"
+          >
+            <template v-slot:body-cell-protocol="props">
+              <q-td :props="props">
+                <q-badge :color="protocolColor(props.value)" :label="props.value" />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-timestamp="props">
+              <q-td :props="props">
+                {{ fmtTime(props.value) }}
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-flags="props">
+              <q-td :props="props">
+                <span class="text-caption text-grey">
+                  {{ fmtFlags(props.row.flags, props.row.protocol_num) }}
+                </span>
+              </q-td>
+            </template>
+
+            <template v-slot:no-data>
+              <div class="full-width text-center text-grey q-pa-md">
+                {{ errorLogs || 'No records found' }}
+              </div>
+            </template>
+          </q-table>
+        </div>
+
+        <!-- Plugins -->
+        <div class="col-12 col-md-6">
+          <div class="row items-center justify-between q-mb-sm">
+            <div class="text-h6">Plugins</div>
+            <q-icon name="extension" size="24px" color="accent" />
+          </div>
+
+          <q-card class="dashboard-card q-pa-md flex flex-center text-grey">
+            Plugins (coming soon)
+          </q-card>
+        </div>
+
       </div>
-
-      <!-- Logs -->
-      <div class="col-12 col-md-6" clickable @click="$router.push('/logs')">
-        <div class="text-h6">Logs</div>
-        <q-icon name="receipt_long" size="24px" color="info" />
-
-        <q-table
-          :rows="logs"
-          :columns="columns"
-          row-key="idx"
-          :loading="loading"
-          flat
-          :rows-per-page-options="[25, 50, 100]"
-          v-model:pagination="pagination"
-          @request="onTableRequest"
-          binary-state-sort
-          @row-click="onRowClick"
-          style="cursor: pointer"
-        >
-          <template v-slot:body-cell-protocol="props">
-            <q-td :props="props">
-              <q-badge :color="protocolColor(props.value)" :label="props.value" />
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-timestamp="props">
-            <q-td :props="props">
-              {{ fmtTime(props.value) }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-flags="props">
-            <q-td :props="props">
-              <span class="text-caption text-grey">
-                {{ fmtFlags(props.row.flags, props.row.protocol_num) }}
-              </span>
-            </q-td>
-          </template>
-
-          <template v-slot:no-data>
-            <div class="full-width text-center text-grey q-pa-md">
-              {{ errorLogs || 'No records found' }}
-            </div>
-          </template>
-        </q-table>
-      </div>
-
-      <!-- Plugins (empty placeholder for now) -->
-      <div class="col-12 col-md-6">
-        <q-card class="dashboard-card q-pa-md flex flex-center text-grey">
-          Plugins (coming soon)
-        </q-card>
-      </div>
-
     </div>
-  </div>
-</q-page>
+  </q-page>
 </template>
 
 <script setup>
