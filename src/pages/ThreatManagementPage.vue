@@ -43,7 +43,7 @@
           <q-btn-toggle
             v-model="severityFilter"
             no-caps rounded unelevated
-            toggle-color="negative"
+            :toggle-color="severityFilter === 'all' ? 'blue' : severityFilter === 'warning' ? 'amber' : 'red'"
             :options="[
               { label: 'All', value: 'all' },
               { label: 'Warning', value: 'warning' },
