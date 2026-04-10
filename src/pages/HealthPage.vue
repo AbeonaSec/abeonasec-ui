@@ -46,11 +46,11 @@
           <div class="row q-col-gutter-md">
             <div class="col-6">
               <div class="text-caption text-grey">Sent</div>
-              <div class="text-body1">{{ data.network.mb_sent }} MB</div>
+              <div class="text-body1">{{ data.network.sent }}</div>
             </div>
             <div class="col-6">
               <div class="text-caption text-grey">Received</div>
-              <div class="text-body1">{{ data.network.mb_recv }} MB</div>
+              <div class="text-body1">{{ data.network.recv }}</div>
             </div>
           </div>
         </q-card-section>
@@ -130,12 +130,14 @@ const gaugeMetrics = computed(() => {
   if (!data.value) return [
     { label: 'CPU', percent: 0, detail: '' },
     { label: 'Memory', percent: 0, detail: '' },
+    { label: 'Swap', percent: 0, detail: '' },
     { label: 'Disk', percent: 0, detail: '' },
   ]
   const d = data.value
   return [
     { label: 'CPU', percent: d.cpu.percent, detail: `${d.cpu.percent}%` },
     { label: 'Memory', percent: d.memory.percent, detail: `${d.memory.used_gb} / ${d.memory.total_gb} GB` },
+    { label: 'Swap', percent: d.swap.percent, detail: `${d.swap.used_gb} / ${d.swap.total_gb} GB` },
     { label: 'Disk', percent: d.disk.percent, detail: `${d.disk.used_gb} / ${d.disk.total_gb} GB` },
   ]
 })
@@ -148,7 +150,7 @@ function gaugeColor (pct) {
 
 onMounted(() => {
   fetchHealth(true)
-  interval = setInterval(fetchHealth, 1000)
+  interval = setInterval(fetchHealth, 5000)
 })
 
 onUnmounted(() => clearInterval(interval))
