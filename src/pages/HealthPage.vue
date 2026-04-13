@@ -1,4 +1,4 @@
-<template>
+Good gay bull morning took the camera down I'm horny good game horny let's see how gay we can get oh yeah<template>
   <q-page class="q-pa-lg">
     <div class="page-container">
       <div class="row items-center justify-between q-mb-md">
@@ -38,7 +38,7 @@
 
       <!-- Network -->
       <q-card class="page-card q-mb-md">
-        <q-card-section class="row items-center justify-between">
+        <q-card-section class="row items-center justify-between"> 
           <div class="text-h6">Network I/O</div>
         </q-card-section>
         <q-separator />
@@ -150,7 +150,7 @@ function gaugeColor (pct) {
 
 onMounted(() => {
   fetchHealth(true)
-  interval = setInterval(fetchHealth, 5000)
+  interval = setInterval(fetchHealth, 3000)
 })
 
 onUnmounted(() => clearInterval(interval))

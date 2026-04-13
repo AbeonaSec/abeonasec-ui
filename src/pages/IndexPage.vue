@@ -41,7 +41,7 @@
             <div class="text-h6">Threat Management</div>
             <q-icon name="shield" size="24px" color="warning" />
           </div>
-
+          <q-card>
           <q-table
             :rows="threats"
             :columns="columnsTM"
@@ -92,6 +92,7 @@
               </div>
             </template>
           </q-table>
+          </q-card>
         </div>
 
         <!-- Logs -->
@@ -100,7 +101,7 @@
             <div class="text-h6">Logs</div>
             <q-icon name="receipt_long" size="24px" color="info" />
           </div>
-
+          <q-card>
           <q-table
             :rows="logs"
             :columns="columns"
@@ -140,6 +141,7 @@
               </div>
             </template>
           </q-table>
+          </q-card>
         </div>
 
         <!-- Plugins -->
@@ -212,7 +214,7 @@ function gaugeColor (pct) {
 
 onMounted(() => {
   fetchHealth(true)
-  interval = setInterval(fetchHealth, 5000)
+  interval = setInterval(fetchHealth, 3000)
 })
 
 onUnmounted(() => clearInterval(interval))
