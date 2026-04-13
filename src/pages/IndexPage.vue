@@ -145,7 +145,7 @@
         </div>
 
         <!-- Plugins -->
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6" clickable @click="$router.push('/plugins')">
           <div class="row items-center justify-between q-mb-sm">
             <div class="text-h6">Plugins</div>
             <q-icon name="extension" size="24px" color="accent" />
@@ -250,7 +250,7 @@ async function onRowClick (_, row) {
 
 const pagination = ref({
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: 9,
   rowsNumber: 0,
   sortBy: null,
   descending: true,
@@ -365,7 +365,7 @@ async function onRowClickTM (_, row) {
 
 const paginationTM = ref({
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: 9,
   rowsNumber: 0,
   sortBy: null,
   descending: true,
