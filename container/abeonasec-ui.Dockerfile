@@ -11,8 +11,8 @@ COPY . .
 RUN npm install
 
 # find localhost url for api specified in quasar config and change to container dns name
-# NOTE: not using container dns anymore, will be on host
-# RUN find quasar.config.js -type f -exec sed -i 's/localhost/abeonasec-api/g' {} +
+# NOTE: not using container dns anymore, will be using docker host bridge to communicate
+RUN find quasar.config.js -type f -exec sed -i 's/localhost/172.17.0.1/g' {} +
 RUN quasar build
 
 
