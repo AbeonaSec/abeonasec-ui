@@ -1,4 +1,4 @@
-Good gay bull morning took the camera down I'm horny good game horny let's see how gay we can get oh yeah<template>
+<template>
   <q-page class="q-pa-lg">
     <div class="page-container">
       <div class="row items-center justify-between q-mb-md">
@@ -37,7 +37,7 @@ Good gay bull morning took the camera down I'm horny good game horny let's see h
       </div>
 
       <!-- Network -->
-      <q-card class="page-card q-mb-md">
+      <q-card class="page-card q-mb-md" v-if="data">
         <q-card-section class="row items-center justify-between"> 
           <div class="text-h6">Network I/O</div>
         </q-card-section>
@@ -90,6 +90,28 @@ Good gay bull morning took the camera down I'm horny good game horny let's see h
               />
               <div class="text-caption q-mt-xs">{{ gpu.memory_used_mb }} / {{ gpu.memory_total_mb }} MB ({{ gpu.memory_percent }}%)</div>
             </div>
+          </div>
+        </q-card-section>
+      </q-card>
+
+      <!-- Utilization Per Core -->
+      <q-card class="page-card q-mb-md" v-if="data">
+        <q-card-section class="row items-center justify-between"> 
+          <div class="text-h6">Core Utilization</div>
+        </q-card-section>
+        <q-separator />
+        <q-card-section v-if="data">
+          <div v-for="(usage, index) in data.cores" :key="index" class="q-mb-sm">
+            <div class="text-caption">Core {{ index }}: {{ usage }}%</div>
+            <q-linear-progress 
+              rounded 
+              size="10px" 
+              :value="usage / 100" 
+              :color="gaugeColor(usage)"
+              track-color="grey-3"
+              class="q-mt-xs"
+            >
+            </q-linear-progress>
           </div>
         </q-card-section>
       </q-card>
@@ -150,7 +172,7 @@ function gaugeColor (pct) {
 
 onMounted(() => {
   fetchHealth(true)
-  interval = setInterval(fetchHealth, 3000)
+  interval = setInterval(fetchHealth, 1500)
 })
 
 onUnmounted(() => clearInterval(interval))
