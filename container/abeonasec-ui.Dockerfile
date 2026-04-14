@@ -11,10 +11,8 @@ COPY . .
 RUN npm install
 
 # find localhost url for api specified in quasar config and change to container dns name
-# NOTE: not using container dns anymore, will be using docker host bridge to communicate
-RUN find quasar.config.js -type f -exec sed -i 's/localhost/172.17.0.1/g' {} +
+# NOTE: not using container dns anymore, will be on host
 RUN quasar build
-
 
 # stage 2: start nginx and serve built project
 # copy the built Quasar project to the default site location

@@ -60,7 +60,7 @@
       </q-card>
 
       <!-- GPU -->
-      <q-card class="page-card" v-if="data && data.gpu">
+      <q-card class="page-card q-mb-md" v-if="data && data.gpu">
         <q-card-section class="row items-center justify-between">
           <div class="text-h6">GPU</div>
         </q-card-section>
