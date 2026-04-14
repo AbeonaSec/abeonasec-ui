@@ -213,14 +213,12 @@ const gaugeMetrics = computed(() => {
     { label: 'CPU', percent: 0, detail: '' },
     { label: 'Memory', percent: 0, detail: '' },
     { label: 'Disk', percent: 0, detail: '' },
-    { label: 'GPU', percent: 0, detail: '' },
   ]
   const d = data.value
   if (d.gpu) return [
     { label: 'CPU', percent: d.cpu.percent, detail: `${d.cpu.percent}%` },
     { label: 'Memory', percent: d.memory.percent, detail: `${d.memory.used_gb} / ${d.memory.total_gb} GB` },
     { label: 'Disk', percent: d.disk.percent, detail: `${d.disk.used_gb} / ${d.disk.total_gb} GB` },
-    { label: 'GPU', percent: d.gpu.utilization_percent, detail: `${d.gpu.utilization_percent}%` },
   ]
   return [
     { label: 'CPU', percent: d.cpu.percent, detail: `${d.cpu.percent}%` },
