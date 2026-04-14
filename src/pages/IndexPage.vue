@@ -151,9 +151,32 @@
             <q-icon name="extension" size="24px" color="accent" />
           </div>
 
-          <q-card class="dashboard-card q-pa-md flex flex-center text-grey">
-            Plugins (coming soon)
-          </q-card>
+          <q-card class="dashboard-card q-pa-md">
+            
+            <div v-if="pluginsError" class="full-width text-center text-grey text-center q-pa-md">
+              {{ pluginsError }}
+            </div>
+
+            <div v-else-if="runningPlugins.length === 0" class="full-width text-grey text-center q-pa-md">
+              No active plugins
+            </div>
+
+            <q-list v-else dense bordered separator>
+              <q-item v-for="plugin in runningPlugins" :key="plugin.id">
+                <q-item-section avatar>
+                  <q-icon name="check_circle" color="positive" />
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label>{{ plugin.name }}</q-item-label>
+                  <q-item-label caption>
+                    {{ plugin.description }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+
+        </q-card>
         </div>
 
       </div>
@@ -162,13 +185,6 @@
 </template>
 
 <script setup>
-// const cards = [
-//   { title: 'System Health', icon: 'monitor_heart', color: 'positive', link: '/health' },
-//   { title: 'Threat Management', icon: 'shield', color: 'warning', link: '/threats' },
-//   { title: 'Logs', icon: 'receipt_long', color: 'info', link: '/logs' },
-//   { title: 'Plugins', icon: 'extension', color: 'accent', link: '/plugins' }
-// ]
-
 
 // For importing the system health
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -197,8 +213,15 @@ const gaugeMetrics = computed(() => {
     { label: 'CPU', percent: 0, detail: '' },
     { label: 'Memory', percent: 0, detail: '' },
     { label: 'Disk', percent: 0, detail: '' },
+    { label: 'GPU', percent: 0, detail: '' },
   ]
   const d = data.value
+  if (d.gpu) return [
+    { label: 'CPU', percent: d.cpu.percent, detail: `${d.cpu.percent}%` },
+    { label: 'Memory', percent: d.memory.percent, detail: `${d.memory.used_gb} / ${d.memory.total_gb} GB` },
+    { label: 'Disk', percent: d.disk.percent, detail: `${d.disk.used_gb} / ${d.disk.total_gb} GB` },
+    { label: 'GPU', percent: d.gpu.utilization_percent, detail: `${d.gpu.utilization_percent}%` },
+  ]
   return [
     { label: 'CPU', percent: d.cpu.percent, detail: `${d.cpu.percent}%` },
     { label: 'Memory', percent: d.memory.percent, detail: `${d.memory.used_gb} / ${d.memory.total_gb} GB` },
@@ -250,7 +273,7 @@ async function onRowClick (_, row) {
 
 const pagination = ref({
   page: 1,
-  rowsPerPage: 9,
+  rowsPerPage: 8,
   rowsNumber: 0,
   sortBy: null,
   descending: true,
@@ -365,7 +388,7 @@ async function onRowClickTM (_, row) {
 
 const paginationTM = ref({
   page: 1,
-  rowsPerPage: 9,
+  rowsPerPage: 8,
   rowsNumber: 0,
   sortBy: null,
   descending: true,
@@ -441,6 +464,34 @@ onMounted(() => {
   fetchThreats()
 })
 
+
+// for plugins
+const plugins = ref([])
+const pluginsLoading = ref(false)
+const pluginsError = ref('')
+
+const runningPlugins = computed(() =>
+  plugins.value.filter(p => p.status === 'running')
+)
+
+async function fetchPlugins () {
+  pluginsLoading.value = true
+  pluginsError.value = ''
+  try {
+    const res = await fetch('/api/plugins')
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const data = await res.json()
+    plugins.value = data.plugins
+  } catch (e) {
+    pluginsError.value = `Failed to load plugins: ${e.message}`
+  } finally {
+    pluginsLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchPlugins()
+})
 </script>
 
 <style scoped>
